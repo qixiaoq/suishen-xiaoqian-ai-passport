@@ -1,0 +1,15 @@
+{
+  "name": "suishen-xiaoqian-companion",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "lunar-javascript": "^1.7.7"
+  }
+}

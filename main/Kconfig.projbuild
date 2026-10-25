@@ -1,0 +1,7 @@
+menu "随身小签"
+    config XIAOQIAN_COMPANION_URL
+        string "手机解读服务地址（公网用 HTTPS，末尾不带斜线）"
+        default ""
+        help
+            在这里填写部署后的手机端公开地址。设备二维码将指向此地址下的 /q/ 路径。
+endmenu

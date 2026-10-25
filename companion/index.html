@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>随身小签</title>
+  <style>
+    :root { color-scheme: light; --paper:#f2e6cf; --ink:#30231e; --red:#8e3c2d; --line:#b99a6d; font-family:"Songti SC","Noto Serif CJK SC",serif; background:#251813; color:var(--ink); }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(ellipse at 50% 0%,#4b2d25,#211512 70%); }
+    main { width:min(100%,580px); min-height:100vh; margin:auto; padding:30px clamp(19px,5vw,42px) 58px; background:linear-gradient(165deg,#ead6b4 0,#f8eedc 24%,#f2e5ce 100%); box-shadow:0 20px 70px #0008; position:relative; }
+    main::before { content:""; position:absolute; inset:9px; border:1px solid #a6835b70; pointer-events:none; }
+    header { position:relative; border-bottom:1px solid #a78357; padding:0 0 20px; }
+    .eyebrow { letter-spacing:.28em; font:11px/1.5 system-ui,sans-serif; color:#8d6249; }
+    h1 { font-size:clamp(34px,8vw,48px); line-height:1.25; letter-spacing:.1em; margin:15px 0 4px; font-weight:500; }
+    .seal { display:inline-grid; place-items:center; width:29px; height:32px; border:1px solid var(--red); color:var(--red); font-size:17px; letter-spacing:0; transform:rotate(6deg); vertical-align:middle; }
+    .panel { position:relative; margin-top:24px; padding:22px 21px; border:1px solid var(--line); background:#fbf3e4; box-shadow:3px 4px 0 #d7be96; }
+    .panel::before { content:""; position:absolute; top:6px; left:7px; right:7px; border-top:1px solid #d7bd91; pointer-events:none; }
+    h2 { font-size:clamp(21px,5vw,26px); font-weight:500; letter-spacing:.07em; margin:0 0 14px; }
+    label { display:block; margin:20px 0 8px; font:600 15px/1.5 system-ui,sans-serif; color:#604738; }
+    textarea, select, input { width:100%; border:1px solid #b89b76; border-radius:0; background:#fffaf0; color:var(--ink); padding:12px; font:16px/1.55 system-ui,sans-serif; outline:none; }
+    textarea:focus, select:focus, input:focus { border-color:var(--red); box-shadow:0 0 0 2px #8e3c2d26; }
+    textarea { min-height:112px; resize:vertical; }
+    button { margin-top:19px; background:var(--red); color:#f9e8cd; border:1px solid var(--red); padding:13px 20px; font:17px/1.3 "Songti SC",serif; letter-spacing:.08em; cursor:pointer; }
+    button:focus-visible { outline:2px solid #7b3025; outline-offset:3px; }
+    button.secondary { color:var(--red); background:transparent; border:1px solid var(--red); margin-right:10px; font-size:15px; }
+    button:disabled { opacity:.5; cursor:not-allowed; }
+    #submit { width:100%; }
+    #result { white-space:pre-wrap; font:16px/1.85 system-ui,sans-serif; }
+    .history-item { border-top:1px solid #d1b994; padding:16px 0; white-space:pre-wrap; }
+    .muted { color:#765c48; font:14px/1.7 system-ui,sans-serif; white-space:pre-line; }
+    .error { color:#a12e28; font:14px/1.6 system-ui,sans-serif; }
+    footer { border-top:1px solid #b99a6d; margin-top:36px; padding-top:17px; font:13px/1.7 system-ui,sans-serif; color:#715848; }
+    @media(max-width:520px) { main { padding-top:25px; } .panel { padding:19px 16px; } button.secondary { display:inline-block; margin-right:6px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header><div class="eyebrow">A POCKET ORACLE · CULTURAL PLAY</div><h1>随身小签 <span class="seal">淇</span></h1><div class="muted">一问一签，慢慢读懂。</div></header>
+    <section class="panel"><h2 id="mode">正在读取签卦</h2><p id="casting" class="muted">请稍候…</p></section>
+    <p id="loadError" class="error" role="alert"></p>
+    <form id="questionForm" class="panel" hidden>
+      <h2>写下心中所问</h2>
+      <div id="birthFields" hidden>
+        <label for="birthName">本人或朋友的称呼（可不填）</label>
+        <input id="birthName" maxlength="30" placeholder="例如：小淇">
+        <label for="calendar">出生日期采用</label>
+        <select id="calendar"><option value="solar">公历</option><option value="lunar">农历</option></select>
+        <label for="birthDate">出生年月日</label>
+        <input id="birthDate" type="date">
+        <label for="leapMonth"><input id="leapMonth" type="checkbox" style="width:auto"> 农历闰月（仅选农历时使用）</label>
+        <label for="birthHour">出生小时（不记得可留空）</label>
+        <select id="birthHour"><option value="">时辰不详</option></select>
+        <label for="birthPlace">出生地点</label>
+        <input id="birthPlace" maxlength="80" placeholder="例如：浙江宁波">
+        <p class="muted">目前按填写的钟表时间排盘，暂不换算真太阳时。</p>
+      </div>
+      <label for="category">关于什么</label>
+      <select id="category"><option value="">不分类</option><option>感情与人际</option><option>工作与学业</option><option>日常生活</option><option>财务选择</option><option>其他</option></select>
+      <label for="question">你的问题</label>
+      <textarea id="question" maxlength="500" placeholder="例如：这件事接下来值得注意什么？"></textarea>
+      <button type="submit" id="submit">看白话解读</button>
+      <p id="aiNotice" class="error" role="status" hidden></p>
+      <p id="message" class="error" role="alert"></p>
+      <p class="muted">解读用于传统文化体验与自我思考，不替你作重要决定。</p>
+    </form>
+    <section id="resultPanel" class="panel" hidden><h2>签中之意</h2><div id="result"></div><button class="secondary" id="save" type="button">保存本次</button><p id="saveStatus" class="muted"></p></section>
+    <section class="panel"><h2>本机旧签</h2><button class="secondary" id="historyToggle" type="button">查看已保存的签</button><button class="secondary" id="clear" type="button">删除本机保存</button><div id="historyPanel" hidden><div id="historyList"></div></div></section>
+    <footer>签卦与提问默认不进入长期历史。提交解读时，问题及填写的出生资料会发送给所配置的 AI 服务；主动保存仅存于此浏览器，可随时删除。</footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

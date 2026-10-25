@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>随身小签 · 本机设置</title>
+<style>
+  body{margin:0;background:#281f1d;color:#352a23;font:16px/1.65 system-ui,sans-serif}
+  main{max-width:560px;min-height:100vh;box-sizing:border-box;margin:auto;padding:28px;
+    background:#f6eedb;border-inline:2px solid #9c7955}
+  h1{font:600 32px/1.3 "Songti SC",serif;color:#8f382d;margin:0 0 12px}
+  p{color:#695746}label{display:block;margin:18px 0 6px;font-weight:600}
+  input{width:100%;box-sizing:border-box;padding:11px;border:1px solid #aa9679;
+    background:#fffaf0;font:inherit}button{margin-top:24px;padding:12px 20px;border:0;
+    background:#963f32;color:white;font:inherit}#status{min-height:26px;color:#913a2e}
+</style>
+<main>
+  <h1>本机解读设置</h1>
+  <p>在运行手机解读服务的电脑上填写。密钥只保存在当前服务进程的内存中；重启服务后需重新填写。</p>
+  <form id="form">
+    <label for="base">兼容 Chat Completions 的 HTTPS 接口地址</label>
+    <input id="base" type="url" value="https://dashscope.aliyuncs.com/compatible-mode/v1/" required>
+    <label for="model">模型名</label>
+    <input id="model" value="qwen-plus" autocomplete="off" required>
+    <label for="key">API 密钥</label>
+    <input id="key" type="password" autocomplete="new-password" required>
+    <button>启用白话解读</button>
+  </form>
+  <p>已预填阿里云百炼的兼容接口和模型。若控制台给你的是工作空间专属地址，请用控制台地址替换。使用其他服务时也可修改这两项。</p>
+  <p id="status" role="status"></p>
+  <p>设置成功后，重新打开手机上的签卦页面即可提问。</p>
+</main>
+<script>
+  document.getElementById('form').onsubmit=async event=>{
+    event.preventDefault();
+    const status=document.getElementById('status');
+    status.textContent='正在保存本机设置…';
+    try{
+      const response=await fetch('/api/local-config',{method:'POST',
+        headers:{'content-type':'application/json'},
+        body:JSON.stringify({base:document.getElementById('base').value,
+          model:document.getElementById('model').value,
+          key:document.getElementById('key').value})});
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||'设置失败');
+      document.getElementById('key').value='';
+      status.textContent='已启用。请回到手机上的签卦页并刷新。';
+    }catch(error){status.textContent=error.message}
+  };
+</script>
+</html>

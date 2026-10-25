@@ -8,4 +8,4 @@ This repository publishes **source code for self-hosting and development**. It i
 
 The firmware targets ESP32-C3 AI Passport hardware with ESP-IDF 5.5.3. The host companion uses Node.js. To validate, run `./tools/validate.sh` in a configured ESP-IDF environment. A merged image can be built for standalone flashing; the application image is only a **candidate** for a MetaPass2 child slot and has not been tested there. Do not use this source as a ready-to-install community package.
 
-The original project license is [MIT](LICENSE). The included Adobe Source Han Serif font uses the [SIL Open Font License](assets/fonts/LICENSE.txt); the vendored QR encoder retains its MIT notice in [its source](main/vendor/qrcodegen/qrcodegen.h).
+The original project license is [MIT](LICENSE). The renamed subset of Adobe Source Han Serif uses the [SIL Open Font License](assets/fonts/LICENSE.txt); the vendored QR encoder retains its MIT notice in [its source](main/vendor/qrcodegen/qrcodegen.h).
